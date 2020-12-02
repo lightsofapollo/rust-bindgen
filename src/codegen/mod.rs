@@ -127,8 +127,8 @@ fn derives_of_item(item: &Item, ctx: &BindgenContext) -> DerivableTraits {
     if item.can_derive_copy(ctx) && !item.annotations().disallow_copy() {
         derivable_traits |= DerivableTraits::COPY;
 
-        if ctx.options().rust_features().builtin_clone_impls ||
-            !all_template_params.is_empty()
+        if ctx.options().rust_features().builtin_clone_impls
+            || !all_template_params.is_empty()
         {
             // FIXME: This requires extra logic if you have a big array in a
             // templated struct. The reason for this is that the magic:
@@ -384,21 +384,21 @@ impl AppendImplicitTemplateParams for proc_macro2::TokenStream {
             }
 
             // None of these types ever have implicit template parameters.
-            TypeKind::Void |
-            TypeKind::NullPtr |
-            TypeKind::Pointer(..) |
-            TypeKind::Reference(..) |
-            TypeKind::Int(..) |
-            TypeKind::Float(..) |
-            TypeKind::Complex(..) |
-            TypeKind::Array(..) |
-            TypeKind::TypeParam |
-            TypeKind::Opaque |
-            TypeKind::Function(..) |
-            TypeKind::Enum(..) |
-            TypeKind::ObjCId |
-            TypeKind::ObjCSel |
-            TypeKind::TemplateInstantiation(..) => return,
+            TypeKind::Void
+            | TypeKind::NullPtr
+            | TypeKind::Pointer(..)
+            | TypeKind::Reference(..)
+            | TypeKind::Int(..)
+            | TypeKind::Float(..)
+            | TypeKind::Complex(..)
+            | TypeKind::Array(..)
+            | TypeKind::TypeParam
+            | TypeKind::Opaque
+            | TypeKind::Function(..)
+            | TypeKind::Enum(..)
+            | TypeKind::ObjCId
+            | TypeKind::ObjCSel
+            | TypeKind::TemplateInstantiation(..) => return,
             _ => {}
         }
 
@@ -539,9 +539,9 @@ impl CodeGenerator for Module {
             }
         };
 
-        if !ctx.options().enable_cxx_namespaces ||
-            (self.is_inline() &&
-                !ctx.options().conservative_inline_namespaces)
+        if !ctx.options().enable_cxx_namespaces
+            || (self.is_inline()
+                && !ctx.options().conservative_inline_namespaces)
         {
             codegen_self(result, &mut false);
             return;
@@ -739,19 +739,19 @@ impl CodeGenerator for Type {
         debug_assert!(item.is_enabled_for_codegen(ctx));
 
         match *self.kind() {
-            TypeKind::Void |
-            TypeKind::NullPtr |
-            TypeKind::Int(..) |
-            TypeKind::Float(..) |
-            TypeKind::Complex(..) |
-            TypeKind::Array(..) |
-            TypeKind::Vector(..) |
-            TypeKind::Pointer(..) |
-            TypeKind::Reference(..) |
-            TypeKind::Function(..) |
-            TypeKind::ResolvedTypeRef(..) |
-            TypeKind::Opaque |
-            TypeKind::TypeParam => {
+            TypeKind::Void
+            | TypeKind::NullPtr
+            | TypeKind::Int(..)
+            | TypeKind::Float(..)
+            | TypeKind::Complex(..)
+            | TypeKind::Array(..)
+            | TypeKind::Vector(..)
+            | TypeKind::Pointer(..)
+            | TypeKind::Reference(..)
+            | TypeKind::Function(..)
+            | TypeKind::ResolvedTypeRef(..)
+            | TypeKind::Opaque
+            | TypeKind::TypeParam => {
                 // These items don't need code generation, they only need to be
                 // converted to rust types in fields, arguments, and such.
                 // NOTE(emilio): If you add to this list, make sure to also add
@@ -891,10 +891,10 @@ impl CodeGenerator for Type {
                     // paths, eg `good::dogs::Bront`.
                     'A'..='Z' | 'a'..='z' | '0'..='9' | ':' | '_' | ' ' => true,
                     _ => false,
-                }) && outer_params.is_empty() &&
-                    !is_opaque &&
-                    alias_style == AliasVariation::TypeAlias &&
-                    inner_item.expect_type().canonical_type(ctx).is_enum()
+                }) && outer_params.is_empty()
+                    && !is_opaque
+                    && alias_style == AliasVariation::TypeAlias
+                    && inner_item.expect_type().canonical_type(ctx).is_enum()
                 {
                     tokens.append_all(quote! {
                         pub use
@@ -1301,9 +1301,10 @@ impl<'a> FieldCodegen<'a> for FieldData {
             fields.extend(Some(padding_field));
         }
 
-        let is_private = (!self.is_public() &&
-            ctx.options().respect_cxx_access_specs) ||
-            self.annotations()
+        let is_private = (!self.is_public()
+            && ctx.options().respect_cxx_access_specs)
+            || self
+                .annotations()
                 .private_fields()
                 .unwrap_or(fields_should_be_private);
 
@@ -1515,8 +1516,8 @@ impl<'a> FieldCodegen<'a> for BitfieldUnit {
                 continue;
             }
 
-            if layout.size > RUST_DERIVE_IN_ARRAY_LIMIT &&
-                !ctx.options().rust_features().larger_arrays
+            if layout.size > RUST_DERIVE_IN_ARRAY_LIMIT
+                && !ctx.options().rust_features().larger_arrays
             {
                 continue;
             }
@@ -1979,32 +1980,32 @@ impl CodeGenerator for CompInfo {
 
         let derivable_traits = derives_of_item(item, ctx);
         if !derivable_traits.contains(DerivableTraits::DEBUG) {
-            needs_debug_impl = ctx.options().derive_debug &&
-                ctx.options().impl_debug &&
-                !ctx.no_debug_by_name(item) &&
-                !item.annotations().disallow_debug();
+            needs_debug_impl = ctx.options().derive_debug
+                && ctx.options().impl_debug
+                && !ctx.no_debug_by_name(item)
+                && !item.annotations().disallow_debug();
         }
 
         if !derivable_traits.contains(DerivableTraits::DEFAULT) {
-            needs_default_impl = ctx.options().derive_default &&
-                !self.is_forward_declaration() &&
-                !ctx.no_default_by_name(item) &&
-                !item.annotations().disallow_default();
+            needs_default_impl = ctx.options().derive_default
+                && !self.is_forward_declaration()
+                && !ctx.no_default_by_name(item)
+                && !item.annotations().disallow_default();
         }
 
         let all_template_params = item.all_template_params(ctx);
 
-        if derivable_traits.contains(DerivableTraits::COPY) &&
-            !derivable_traits.contains(DerivableTraits::CLONE)
+        if derivable_traits.contains(DerivableTraits::COPY)
+            && !derivable_traits.contains(DerivableTraits::CLONE)
         {
             needs_clone_impl = true;
         }
 
         if !derivable_traits.contains(DerivableTraits::PARTIAL_EQ) {
-            needs_partialeq_impl = ctx.options().derive_partialeq &&
-                ctx.options().impl_partialeq &&
-                ctx.lookup_can_derive_partialeq_or_partialord(item.id()) ==
-                    CanDerive::Manually;
+            needs_partialeq_impl = ctx.options().derive_partialeq
+                && ctx.options().impl_partialeq
+                && ctx.lookup_can_derive_partialeq_or_partialord(item.id())
+                    == CanDerive::Manually;
         }
 
         let mut derives: Vec<_> = derivable_traits.into();
@@ -2084,9 +2085,9 @@ impl CodeGenerator for CompInfo {
                     let size = layout.size;
                     let align = layout.align;
 
-                    let check_struct_align = if align >
-                        ctx.target_pointer_size() &&
-                        !ctx.options().rust_features().repr_align
+                    let check_struct_align = if align
+                        > ctx.target_pointer_size()
+                        && !ctx.options().rust_features().repr_align
                     {
                         None
                     } else {
@@ -2103,8 +2104,8 @@ impl CodeGenerator for CompInfo {
                         .base_members()
                         .iter()
                         .filter(|base| base.ty.has_vtable(ctx))
-                        .count() >
-                        1;
+                        .count()
+                        > 1;
 
                     let should_skip_field_offset_checks =
                         is_opaque || too_many_base_vtables;
@@ -2326,9 +2327,9 @@ impl MethodCodegen for Method {
                 MethodKind::Constructor => cc.constructors(),
                 MethodKind::Destructor => cc.destructors(),
                 MethodKind::VirtualDestructor { .. } => cc.destructors(),
-                MethodKind::Static |
-                MethodKind::Normal |
-                MethodKind::Virtual { .. } => cc.methods(),
+                MethodKind::Static
+                | MethodKind::Normal
+                | MethodKind::Virtual { .. } => cc.methods(),
             }
         });
 
@@ -2469,8 +2470,8 @@ impl MethodCodegen for Method {
         let mut attrs = vec![];
         attrs.push(attributes::inline());
 
-        if signature.must_use() &&
-            ctx.options().rust_features().must_use_function
+        if signature.must_use()
+            && ctx.options().rust_features().must_use_function
         {
             attrs.push(attributes::must_use());
         }
@@ -2589,10 +2590,10 @@ impl<'a> EnumBuilder<'a> {
     /// Returns the depth of the code generation for a variant of this enum.
     fn codegen_depth(&self) -> usize {
         match *self {
-            EnumBuilder::Rust { codegen_depth, .. } |
-            EnumBuilder::NewType { codegen_depth, .. } |
-            EnumBuilder::ModuleConsts { codegen_depth, .. } |
-            EnumBuilder::Consts { codegen_depth, .. } => codegen_depth,
+            EnumBuilder::Rust { codegen_depth, .. }
+            | EnumBuilder::NewType { codegen_depth, .. }
+            | EnumBuilder::ModuleConsts { codegen_depth, .. }
+            | EnumBuilder::Consts { codegen_depth, .. } => codegen_depth,
         }
     }
 
@@ -2912,8 +2913,8 @@ impl CodeGenerator for Enum {
         let repr_translated;
         let repr = match self.repr().map(|repr| ctx.resolve_type(repr)) {
             Some(repr)
-                if !ctx.options().translate_enum_integer_types &&
-                    !variation.is_rust() =>
+                if !ctx.options().translate_enum_integer_types
+                    && !variation.is_rust() =>
             {
                 repr
             }
@@ -2974,12 +2975,12 @@ impl CodeGenerator for Enum {
         // TODO(emilio): Delegate this to the builders?
         match variation {
             EnumVariation::Rust { non_exhaustive } => {
-                if non_exhaustive &&
-                    ctx.options().rust_features().non_exhaustive
+                if non_exhaustive
+                    && ctx.options().rust_features().non_exhaustive
                 {
                     attrs.push(attributes::non_exhaustive());
-                } else if non_exhaustive &&
-                    !ctx.options().rust_features().non_exhaustive
+                } else if non_exhaustive
+                    && !ctx.options().rust_features().non_exhaustive
                 {
                     panic!("The rust target you're using doesn't seem to support non_exhaustive enums");
                 }
@@ -3003,11 +3004,11 @@ impl CodeGenerator for Enum {
             // For backwards compat, enums always derive Clone/Eq/PartialEq/Hash, even
             // if we don't generate those by default.
             derives.insert(
-                DerivableTraits::CLONE |
-                    DerivableTraits::COPY |
-                    DerivableTraits::HASH |
-                    DerivableTraits::PARTIAL_EQ |
-                    DerivableTraits::EQ,
+                DerivableTraits::CLONE
+                    | DerivableTraits::COPY
+                    | DerivableTraits::HASH
+                    | DerivableTraits::PARTIAL_EQ
+                    | DerivableTraits::EQ,
             );
             let derives: Vec<_> = derives.into();
             attrs.push(attributes::derives(&derives));
@@ -3112,8 +3113,8 @@ impl CodeGenerator for Enum {
 
                         let existing_variant_name = entry.get();
                         // Use associated constants for named enums.
-                        if enum_ty.name().is_some() &&
-                            ctx.options().rust_features().associated_const
+                        if enum_ty.name().is_some()
+                            && ctx.options().rust_features().associated_const
                         {
                             let enum_canonical_name = &ident;
                             let variant_name =
@@ -3161,8 +3162,8 @@ impl CodeGenerator for Enum {
                     // If it's an unnamed enum, or constification is enforced,
                     // we also generate a constant so it can be properly
                     // accessed.
-                    if (variation.is_rust() && enum_ty.name().is_none()) ||
-                        variant.force_constification()
+                    if (variation.is_rust() && enum_ty.name().is_none())
+                        || variant.force_constification()
                     {
                         let mangled_name = if is_toplevel {
                             variant_name.clone()
@@ -3619,9 +3620,9 @@ impl TryToRustTy for Type {
                 inst.try_to_rust_ty(ctx, item)
             }
             TypeKind::ResolvedTypeRef(inner) => inner.try_to_rust_ty(ctx, &()),
-            TypeKind::TemplateAlias(..) |
-            TypeKind::Alias(..) |
-            TypeKind::BlockPointer(..) => {
+            TypeKind::TemplateAlias(..)
+            | TypeKind::Alias(..)
+            | TypeKind::BlockPointer(..) => {
                 if self.is_block_pointer() && !ctx.options().generate_block {
                     let void = c_void(ctx);
                     return Ok(void.to_ptr(/* is_const = */ false));
@@ -3645,8 +3646,8 @@ impl TryToRustTy for Type {
             }
             TypeKind::Comp(ref info) => {
                 let template_params = item.all_template_params(ctx);
-                if info.has_non_type_template_params() ||
-                    (item.is_opaque(ctx, &()) && !template_params.is_empty())
+                if info.has_non_type_template_params()
+                    || (item.is_opaque(ctx, &()) && !template_params.is_empty())
                 {
                     return self.try_to_opaque(ctx, item);
                 }
@@ -3882,8 +3883,8 @@ impl CodeGenerator for Function {
 
         let mut attributes = vec![];
 
-        if signature.must_use() &&
-            ctx.options().rust_features().must_use_function
+        if signature.must_use()
+            && ctx.options().rust_features().must_use_function
         {
             attributes.push(attributes::must_use());
         }
@@ -3944,8 +3945,8 @@ impl CodeGenerator for Function {
         };
 
         // If we're doing dynamic binding generation, add to the dynamic items.
-        if ctx.options().dynamic_library_name.is_some() &&
-            self.kind() == FunctionKind::Function
+        if ctx.options().dynamic_library_name.is_some()
+            && self.kind() == FunctionKind::Function
         {
             let args_identifiers =
                 utils::fnsig_argument_identifiers(ctx, signature);

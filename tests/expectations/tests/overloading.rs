@@ -10,6 +10,7 @@ extern "C" {
     pub fn Evaluate(r: ::std::os::raw::c_char) -> bool;
 }
 extern "C" {
+    #[bindgen_original_name("Evaluate")]
     #[link_name = "\u{1}_Z8Evaluateii"]
     pub fn Evaluate1(
         x: ::std::os::raw::c_int,

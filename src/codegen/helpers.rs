@@ -68,6 +68,12 @@ pub mod attributes {
             #[link_name = #name]
         }
     }
+
+    pub fn original_name(name: &str) -> TokenStream {
+        quote! {
+            #[bindgen_original_name(#name)]
+        }
+    }
 }
 
 /// Generates a proper type for a field or type with a given `Layout`, that is,
