@@ -34,6 +34,7 @@ fn bindgen_test_layout_Bar() {
     );
 }
 extern "C" {
+    #[bindgen_original_name("Bar")]
     #[link_name = "\u{1}_ZN3BarC1Ei"]
     pub fn Bar_Bar(this: *mut Bar, baz: ::std::os::raw::c_int);
 }

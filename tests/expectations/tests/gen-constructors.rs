@@ -24,6 +24,7 @@ fn bindgen_test_layout_Foo() {
     );
 }
 extern "C" {
+    #[bindgen_original_name("Foo")]
     #[link_name = "\u{1}_ZN3FooC1Ei"]
     pub fn Foo_Foo(this: *mut Foo, a: ::std::os::raw::c_int);
 }

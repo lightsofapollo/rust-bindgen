@@ -28,6 +28,7 @@ fn bindgen_test_layout_Bar() {
     );
 }
 extern "C" {
+    #[bindgen_original_name("foo")]
     #[link_name = "\u{1}_ZN3Bar3fooEPKcz"]
     pub fn Bar_foo(this: *mut Bar, fmt: *const ::std::os::raw::c_char, ...);
 }

@@ -18,10 +18,12 @@ extern "C" {
     ) -> bool;
 }
 extern "C" {
+    #[bindgen_original_name("MyFunction")]
     #[link_name = "\u{1}_ZN3foo10MyFunctionEv"]
     pub fn foo_MyFunction();
 }
 extern "C" {
+    #[bindgen_original_name("MyFunction")]
     #[link_name = "\u{1}_ZN3bar10MyFunctionEv"]
     pub fn bar_MyFunction();
 }

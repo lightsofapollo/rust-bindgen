@@ -696,18 +696,21 @@ fn bindgen_test_layout_RealAbstractionWithTonsOfMethods() {
     );
 }
 extern "C" {
+    #[bindgen_original_name("bar")]
     #[link_name = "\u{1}_ZNK32RealAbstractionWithTonsOfMethods3barEv"]
     pub fn RealAbstractionWithTonsOfMethods_bar(
         this: *const RealAbstractionWithTonsOfMethods,
     );
 }
 extern "C" {
+    #[bindgen_original_name("bar")]
     #[link_name = "\u{1}_ZN32RealAbstractionWithTonsOfMethods3barEv"]
     pub fn RealAbstractionWithTonsOfMethods_bar1(
         this: *mut RealAbstractionWithTonsOfMethods,
     );
 }
 extern "C" {
+    #[bindgen_original_name("bar")]
     #[link_name = "\u{1}_ZN32RealAbstractionWithTonsOfMethods3barEi"]
     pub fn RealAbstractionWithTonsOfMethods_bar2(
         this: *mut RealAbstractionWithTonsOfMethods,
@@ -715,6 +718,7 @@ extern "C" {
     );
 }
 extern "C" {
+    #[bindgen_original_name("sta")]
     #[link_name = "\u{1}_ZN32RealAbstractionWithTonsOfMethods3staEv"]
     pub fn RealAbstractionWithTonsOfMethods_sta();
 }

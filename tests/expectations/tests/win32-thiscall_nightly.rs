@@ -26,10 +26,12 @@ fn bindgen_test_layout_Foo() {
     );
 }
 extern "thiscall" {
+    #[bindgen_original_name("test")]
     #[link_name = "\u{1}?test@Foo@@QAEXXZ"]
     pub fn Foo_test(this: *mut Foo);
 }
 extern "thiscall" {
+    #[bindgen_original_name("test2")]
     #[link_name = "\u{1}?test2@Foo@@QAEHH@Z"]
     pub fn Foo_test2(
         this: *mut Foo,

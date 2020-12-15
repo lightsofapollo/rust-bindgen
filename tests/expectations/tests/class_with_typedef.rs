@@ -61,18 +61,22 @@ fn bindgen_test_layout_C() {
     );
 }
 extern "C" {
+    #[bindgen_original_name("method")]
     #[link_name = "\u{1}_ZN1C6methodEi"]
     pub fn C_method(this: *mut C, c: C_MyInt);
 }
 extern "C" {
+    #[bindgen_original_name("methodRef")]
     #[link_name = "\u{1}_ZN1C9methodRefERi"]
     pub fn C_methodRef(this: *mut C, c: *mut C_MyInt);
 }
 extern "C" {
+    #[bindgen_original_name("complexMethodRef")]
     #[link_name = "\u{1}_ZN1C16complexMethodRefERPKc"]
     pub fn C_complexMethodRef(this: *mut C, c: *mut C_Lookup);
 }
 extern "C" {
+    #[bindgen_original_name("anotherMethod")]
     #[link_name = "\u{1}_ZN1C13anotherMethodEi"]
     pub fn C_anotherMethod(this: *mut C, c: AnotherInt);
 }

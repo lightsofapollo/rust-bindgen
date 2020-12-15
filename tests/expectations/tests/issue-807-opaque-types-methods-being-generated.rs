@@ -79,10 +79,12 @@ fn bindgen_test_layout_Opaque() {
     );
 }
 extern "C" {
+    #[bindgen_original_name("eleven_out_of_ten")]
     #[link_name = "\u{1}_ZN6Opaque17eleven_out_of_tenEv"]
     pub fn Opaque_eleven_out_of_ten(this: *mut Opaque) -> SuchWow;
 }
 extern "C" {
+    #[bindgen_original_name("Opaque")]
     #[link_name = "\u{1}_ZN6OpaqueC1E6Pupper"]
     pub fn Opaque_Opaque(this: *mut Opaque, pup: Pupper);
 }

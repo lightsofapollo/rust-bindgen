@@ -24,6 +24,7 @@ fn bindgen_test_layout_Foo() {
     );
 }
 extern "C" {
+    #[bindgen_original_name("bar")]
     #[link_name = "\u{1}_ZN3Foo3barEv"]
     pub fn Foo_bar() -> ::std::os::raw::c_int;
 }

@@ -93,6 +93,7 @@ fn bindgen_test_layout_UnionWithDtor() {
     );
 }
 extern "C" {
+    #[bindgen_original_name("UnionWithDtor_destructor")]
     #[link_name = "\u{1}_ZN13UnionWithDtorD1Ev"]
     pub fn UnionWithDtor_UnionWithDtor_destructor(this: *mut UnionWithDtor);
 }

@@ -24,6 +24,7 @@ fn bindgen_test_layout_TestOverload() {
     );
 }
 extern "C" {
+    #[bindgen_original_name("TestOverload")]
     #[link_name = "\u{1}_ZN12TestOverloadC1Ei"]
     pub fn TestOverload_TestOverload(
         this: *mut TestOverload,
@@ -31,6 +32,7 @@ extern "C" {
     );
 }
 extern "C" {
+    #[bindgen_original_name("TestOverload")]
     #[link_name = "\u{1}_ZN12TestOverloadC1Ed"]
     pub fn TestOverload_TestOverload1(this: *mut TestOverload, arg1: f64);
 }
@@ -67,6 +69,7 @@ fn bindgen_test_layout_TestPublicNoArgs() {
     );
 }
 extern "C" {
+    #[bindgen_original_name("TestPublicNoArgs")]
     #[link_name = "\u{1}_ZN16TestPublicNoArgsC1Ev"]
     pub fn TestPublicNoArgs_TestPublicNoArgs(this: *mut TestPublicNoArgs);
 }
