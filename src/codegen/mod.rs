@@ -3893,6 +3893,16 @@ impl CodeGenerator for Function {
             attributes.push(attributes::doc(comment));
         }
 
+        // Handle overloaded functions by giving each overload its own unique
+        // suffix.
+        let times_seen = result.overload_number(&canonical_name);
+        if times_seen > 0 {
+            write!(&mut canonical_name, "{}", times_seen).unwrap();
+        }
+        if canonical_name != self.name() {
+            attributes.push(attributes::original_name(self.name()));
+        }
+
         let abi = match signature.abi() {
             Abi::ThisCall if !ctx.options().rust_features().thiscall_abi => {
                 warn!("Skipping function with thiscall ABI that isn't supported by the configured Rust target");
