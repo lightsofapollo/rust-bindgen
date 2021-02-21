@@ -3889,11 +3889,9 @@ impl TryToRustTy for FunctionSig {
         _: &(),
     ) -> error::Result<RustTy> {
         // TODO: we might want to consider ignoring the reference return value.
-        let (ret, ret_attrs) = utils::fnsig_return_ty(ctx, &self);
-        let (arguments, arg_attrs) = utils::fnsig_arguments(ctx, &self);
+        let (ret, _) = utils::fnsig_return_ty(ctx, &self);
+        let (arguments, _) = utils::fnsig_arguments(ctx, &self);
         let abi = self.abi();
-        let mut attributes = arg_attrs;
-        attributes.push(ret_attrs);
 
         match abi {
             Abi::ThisCall if !ctx.options().rust_features().thiscall_abi => {
@@ -3901,7 +3899,6 @@ impl TryToRustTy for FunctionSig {
                 Ok(proc_macro2::TokenStream::new().into())
             }
             _ => Ok(quote! {
-                #( #attributes )*
                 unsafe extern #abi fn ( #( #arguments ),* ) #ret
             }
             .into()),
