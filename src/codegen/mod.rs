@@ -837,7 +837,7 @@ impl CodeGenerator for Type {
                     // on our layout if converting the inner item fails.
                     let mut inner_ty = inner_item
                         .try_to_rust_ty_or_opaque(ctx, &())
-                        .map(|ty| ty.unwrap_ts())
+                        .map(|ty| ty.ignore_annotations())
                         .unwrap_or_else(|_| self.to_opaque(ctx, item));
                     inner_ty.append_implicit_template_params(ctx, inner_item);
                     inner_ty
