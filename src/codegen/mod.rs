@@ -408,7 +408,7 @@ impl AppendImplicitTemplateParams for proc_macro2::TokenStream {
             .map(|p| {
                 p.try_to_rust_ty(ctx, &())
                     .expect("template params cannot fail to be a rust type")
-                    .unwrap_ts()
+                    .ignore_annotations()
             })
             .collect();
         if !params.is_empty() {
@@ -954,7 +954,7 @@ impl CodeGenerator for Type {
                     .map(|p| {
                         p.try_to_rust_ty(ctx, &()).expect(
                             "type parameters can always convert to rust ty OK",
-                        ).unwrap_ts()
+                        ).ignore_annotations()
                     })
                     .collect();
 
@@ -1124,7 +1124,8 @@ impl CodeGenerator for TemplateInstantiation {
             let fn_name = ctx.rust_ident_raw(fn_name);
 
             let prefix = ctx.trait_prefix();
-            let ident = item.to_rust_ty_or_opaque(ctx, &()).unwrap_ts();
+            let ident =
+                item.to_rust_ty_or_opaque(ctx, &()).ignore_annotations();
             let size_of_expr = quote! {
                 ::#prefix::mem::size_of::<#ident>()
             };
@@ -1248,7 +1249,10 @@ impl<'a> FieldCodegen<'a> for FieldData {
         let field_item =
             self.ty().into_resolver().through_type_refs().resolve(ctx);
         let field_ty = field_item.expect_type();
-        let mut ty = self.ty().to_rust_ty_or_opaque(ctx, &()).unwrap_ts();
+        let mut ty = self
+            .ty()
+            .to_rust_ty_or_opaque(ctx, &())
+            .ignore_annotations();
         ty.append_implicit_template_params(ctx, field_item);
 
         // NB: If supported, we use proper `union` types.
@@ -1266,7 +1270,8 @@ impl<'a> FieldCodegen<'a> for FieldData {
         } else if let Some(item) = field_ty.is_incomplete_array(ctx) {
             result.saw_incomplete_array();
 
-            let inner = item.to_rust_ty_or_opaque(ctx, &()).unwrap_ts();
+            let inner =
+                item.to_rust_ty_or_opaque(ctx, &()).ignore_annotations();
 
             if ctx.options().enable_cxx_namespaces {
                 quote! {
@@ -1550,7 +1555,7 @@ impl<'a> FieldCodegen<'a> for BitfieldUnit {
             let bitfield_ty = bitfield_ty_item.expect_type();
             let bitfield_ty = bitfield_ty
                 .to_rust_ty_or_opaque(ctx, bitfield_ty_item)
-                .unwrap_ts();
+                .ignore_annotations();
 
             ctor_params.push(quote! {
                 #param_name : #bitfield_ty
@@ -1642,7 +1647,7 @@ impl<'a> FieldCodegen<'a> for Bitfield {
 
         let bitfield_ty = bitfield_ty
             .to_rust_ty_or_opaque(ctx, bitfield_ty_item)
-            .unwrap_ts();
+            .ignore_annotations();
 
         let offset = self.offset_into_unit();
         let width = self.width() as u8;
@@ -1755,7 +1760,7 @@ impl CodeGenerator for CompInfo {
                 let vtable_type = vtable
                     .try_to_rust_ty(ctx, &())
                     .expect("vtable to Rust type conversion is infallible")
-                    .unwrap_ts()
+                    .ignore_annotations()
                     .to_ptr(true);
 
                 fields.push(quote! {
@@ -1771,8 +1776,9 @@ impl CodeGenerator for CompInfo {
                 }
 
                 let inner_item = ctx.resolve_item(base.ty);
-                let mut inner =
-                    inner_item.to_rust_ty_or_opaque(ctx, &()).unwrap_ts();
+                let mut inner = inner_item
+                    .to_rust_ty_or_opaque(ctx, &())
+                    .ignore_annotations();
                 inner.append_implicit_template_params(ctx, &inner_item);
                 let field_name = ctx.rust_ident(&base.field_name);
 
@@ -3057,13 +3063,7 @@ impl CodeGenerator for Enum {
             });
         }
 
-        let repr = match self.repr() {
-            Some(ty) => ty.to_rust_ty_or_opaque(ctx, &()).unwrap_ts(),
-            None => {
-                let repr_name = ctx.rust_ident_raw(repr_name);
-                quote! { #repr_name }
-            }
-        };
+        let repr = repr.to_rust_ty_or_opaque(ctx, item).ignore_annotations();
 
         let mut builder = EnumBuilder::new(
             &name,
@@ -3075,7 +3075,8 @@ impl CodeGenerator for Enum {
 
         // A map where we keep a value -> variant relation.
         let mut seen_values = HashMap::<_, Ident>::default();
-        let enum_rust_ty = item.to_rust_ty_or_opaque(ctx, &()).unwrap_ts();
+        let enum_rust_ty =
+            item.to_rust_ty_or_opaque(ctx, &()).ignore_annotations();
         let is_toplevel = item.is_toplevel(ctx);
 
         // Used to mangle the constants we generate in the unnamed-enum case.
@@ -3552,14 +3553,6 @@ impl RustTy {
         }
     }
 
-    fn unwrap_ts(self) -> proc_macro2::TokenStream {
-        if matches!(self.annotation, RustTyAnnotation::None) {
-            self.ts
-        } else {
-            panic!("Type was unexpectedly annotated")
-        }
-    }
-
     // Where this is called, we're discarding information about whether
     // a type is a reference or a pointer. This is not desirable.
     fn ignore_annotations(self) -> proc_macro2::TokenStream {
@@ -3750,7 +3743,8 @@ impl TryToRustTy for Type {
                 // Regardless if we can properly represent the inner type, we
                 // should always generate a proper pointer here, so use
                 // infallible conversion of the inner type.
-                let mut ty = inner.to_rust_ty_or_opaque(ctx, &()).unwrap_ts();
+                let mut ty =
+                    inner.to_rust_ty_or_opaque(ctx, &()).ignore_annotations();
                 ty.append_implicit_template_params(ctx, inner);
 
                 // Avoid the first function pointer level, since it's already
