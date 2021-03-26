@@ -501,7 +501,7 @@ impl FunctionSig {
                     Item::builtin_type(TypeKind::Pointer(class), false, ctx);
                 args.insert(0, (Some("this".into()), ptr));
             } else if is_virtual {
-                let void = Item::builtin_type(TypeKind::Void, false, ctx);
+                let void = Item::builtin_type(TypeKind::Void, is_const, ctx);
                 let ptr =
                     Item::builtin_type(TypeKind::Pointer(void), false, ctx);
                 args.insert(0, (Some("this".into()), ptr));
