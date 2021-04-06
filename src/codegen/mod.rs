@@ -3984,20 +3984,6 @@ impl CodeGenerator for Function {
             attributes.push(attributes::is_pure_virtual());
         }
 
-        // Handle overloaded functions by giving each overload its own unique
-        // suffix.
-        let times_seen = result.overload_number(&canonical_name);
-        if times_seen > 0 {
-            write!(&mut canonical_name, "{}", times_seen).unwrap();
-        }
-        if canonical_name != self.name() {
-            attributes.push(attributes::original_name(self.name()));
-        }
-
-        if self.is_private() {
-            attributes.push(attributes::is_private());
-        }
-
         let abi = match signature.abi() {
             Abi::ThisCall if !ctx.options().rust_features().thiscall_abi => {
                 warn!("Skipping function with thiscall ABI that isn't supported by the configured Rust target");
@@ -4021,6 +4007,9 @@ impl CodeGenerator for Function {
         let times_seen = result.overload_number(&canonical_name);
         if times_seen > 0 {
             write!(&mut canonical_name, "{}", times_seen).unwrap();
+        }
+        if canonical_name != self.name() {
+            attributes.push(attributes::original_name(self.name()));
         }
 
         if let Some(special_member_kind) = self.special_member() {
