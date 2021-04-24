@@ -93,6 +93,12 @@ pub mod attributes {
             #[bindgen_pure_virtual]
         }
     }
+
+    pub fn unused_template_param_in_arg_or_return() -> TokenStream {
+        quote! {
+            #[bindgen_unused_template_param_in_arg_or_return]
+        }
+    }
 }
 
 /// Generates a proper type for a field or type with a given `Layout`, that is,
