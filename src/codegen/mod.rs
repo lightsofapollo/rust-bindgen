@@ -828,19 +828,21 @@ impl CodeGenerator for Type {
                 let mut outer_params = item.used_template_params(ctx);
 
                 let is_opaque = item.is_opaque(ctx, &());
-                let inner_rust_type = if is_opaque {
+                let (inner_rust_type, inner_annotations) = if is_opaque {
                     outer_params = vec![];
-                    self.to_opaque(ctx, item)
+                    (self.to_opaque(ctx, item), RustTyAnnotation::None)
                 } else {
                     // Its possible that we have better layout information than
                     // the inner type does, so fall back to an opaque blob based
                     // on our layout if converting the inner item fails.
-                    let mut inner_ty = inner_item
+                    let (mut inner_ty, inner_annotations) = inner_item
                         .try_to_rust_ty_or_opaque(ctx, &())
-                        .map(|ty| ty.ignore_annotations())
-                        .unwrap_or_else(|_| self.to_opaque(ctx, item));
+                        .map(|ty| ty.to_outer_type())
+                        .unwrap_or_else(|_| {
+                            (self.to_opaque(ctx, item), RustTyAnnotation::None)
+                        });
                     inner_ty.append_implicit_template_params(ctx, inner_item);
-                    inner_ty
+                    (inner_ty, inner_annotations)
                 };
 
                 {
@@ -873,6 +875,14 @@ impl CodeGenerator for Type {
                 } else {
                     quote! {}
                 };
+                tokens.append_all(match inner_annotations {
+                    RustTyAnnotation::None | RustTyAnnotation::Reference => {
+                        quote! {}
+                    }
+                    RustTyAnnotation::HasUnusedTemplateArgs => {
+                        attributes::alias_discards_template_params()
+                    }
+                });
 
                 let alias_style = if ctx.options().type_alias.matches(&name) {
                     AliasVariation::TypeAlias
@@ -3547,11 +3557,29 @@ impl RustTy {
         }
     }
 
-    fn new_reference(ts: proc_macro2::TokenStream) -> Self {
-        Self {
-            ts,
-            annotation: RustTyAnnotation::Reference,
-        }
+    fn new_reference(
+        ts: proc_macro2::TokenStream,
+        inner: RustTyAnnotation,
+    ) -> Self {
+        let annotation = match inner {
+            RustTyAnnotation::HasUnusedTemplateArgs => {
+                RustTyAnnotation::HasUnusedTemplateArgs
+            }
+            _ => RustTyAnnotation::Reference,
+        };
+        Self { ts, annotation }
+    }
+
+    // We're constructing some outer type composed of an inner type,
+    // e.g. a reference to a T - the inner type is T
+    fn wraps(ts: proc_macro2::TokenStream, inner: RustTyAnnotation) -> Self {
+        let annotation = match inner {
+            RustTyAnnotation::HasUnusedTemplateArgs => {
+                RustTyAnnotation::HasUnusedTemplateArgs
+            }
+            _ => RustTyAnnotation::None,
+        };
+        Self { ts, annotation }
     }
 
     fn with_unused_template_args(
@@ -3572,6 +3600,12 @@ impl RustTy {
     // a type is a reference or a pointer. This is not desirable.
     fn ignore_annotations(self) -> proc_macro2::TokenStream {
         self.ts
+    }
+
+    // Use when this is an inner type and will become part of an outer type.
+    // Pass the annotation into [wraps]
+    fn to_outer_type(self) -> (proc_macro2::TokenStream, RustTyAnnotation) {
+        (self.ts, self.annotation)
     }
 
     fn to_unannotated_ts(self) -> error::Result<proc_macro2::TokenStream> {
@@ -3758,21 +3792,21 @@ impl TryToRustTy for Type {
                 // Regardless if we can properly represent the inner type, we
                 // should always generate a proper pointer here, so use
                 // infallible conversion of the inner type.
-                let mut ty =
-                    inner.to_rust_ty_or_opaque(ctx, &()).ignore_annotations();
+                let (mut ty, inner_annotations) =
+                    inner.to_rust_ty_or_opaque(ctx, &()).to_outer_type();
                 ty.append_implicit_template_params(ctx, inner);
 
                 // Avoid the first function pointer level, since it's already
                 // represented in Rust.
                 if inner_ty.canonical_type(ctx).is_function() || is_objc_pointer
                 {
-                    Ok(ty.into())
+                    Ok(RustTy::wraps(ty, inner_annotations))
                 } else {
                     let ty_ptr = ty.to_ptr(is_const);
                     Ok(if is_reference {
-                        RustTy::new_reference(ty_ptr)
+                        RustTy::new_reference(ty_ptr, inner_annotations)
                     } else {
-                        ty_ptr.into()
+                        RustTy::wraps(ty_ptr, inner_annotations)
                     })
                 }
             }
@@ -4785,10 +4819,10 @@ pub mod utils {
                             } else {
                                 t.to_rust_ty_or_opaque(ctx, &())
                             };
-                        RustTy::new(
-                            rust_ty
-                                .ignore_annotations()
-                                .to_ptr(ctx.resolve_type(t).is_const()),
+                        let (inner_ty, annotations) = rust_ty.to_outer_type();
+                        RustTy::wraps(
+                            inner_ty.to_ptr(ctx.resolve_type(t).is_const()),
+                            annotations,
                         )
                     }
                     TypeKind::Pointer(inner) => {
