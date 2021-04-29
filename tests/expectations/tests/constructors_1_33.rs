@@ -72,6 +72,7 @@ fn bindgen_test_layout_TestPublicNoArgs() {
 }
 extern "C" {
     #[bindgen_original_name("TestPublicNoArgs")]
+    #[bindgen_special_member("default_ctor")]
     #[link_name = "\u{1}_ZN16TestPublicNoArgsC1Ev"]
     pub fn TestPublicNoArgs_TestPublicNoArgs(this: *mut TestPublicNoArgs);
 }

@@ -1,6 +1,6 @@
 //! Intermediate representation for C/C++ functions and methods.
 
-use super::comp::MethodKind;
+use super::comp::{MethodKind, SpecialMemberKind};
 use super::context::{BindgenContext, TypeId};
 use super::dot::DotAttributes;
 use super::item::Item;

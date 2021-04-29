@@ -30,6 +30,7 @@ fn bindgen_test_layout_Bar() {
 }
 extern "C" {
     #[bindgen_original_name("Bar")]
+    #[bindgen_special_member("default_ctor")]
     #[link_name = "\u{1}_ZN3BarC1Ev"]
     pub fn Bar_Bar(this: *mut Bar);
 }

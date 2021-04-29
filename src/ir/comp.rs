@@ -73,6 +73,17 @@ impl MethodKind {
     }
 }
 
+// The kind of C++ special member.
+// TODO: We don't currently cover copy assignment or move assignment operator
+// because libclang doesn't provide a way to query for them.
+#[derive(Debug, Copy, Clone, PartialEq)]
+pub enum SpecialMemberKind {
+    DefaultConstructor,
+    CopyConstructor,
+    MoveConstructor,
+    Destructor,
+}
+
 /// A struct representing a C++ method, either static, normal, or virtual.
 #[derive(Debug)]
 pub struct Method {

@@ -6,6 +6,7 @@ use proc_macro2::{Ident, Span, TokenStream};
 use quote::TokenStreamExt;
 
 pub mod attributes {
+    use crate::ir::comp::SpecialMemberKind;
     use proc_macro2::{Ident, Span, TokenStream};
     use std::str::FromStr;
 
