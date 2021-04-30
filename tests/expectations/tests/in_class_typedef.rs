@@ -16,6 +16,7 @@ pub type Foo_elem_type<T> = T;
 pub type Foo_ptr_type<T> = *mut T;
 #[repr(C)]
 #[derive(Debug, Default, Copy, Clone)]
+#[bindgen_original_name("Foo::Bar")]
 pub struct Foo_Bar {
     pub x: ::std::os::raw::c_int,
     pub y: ::std::os::raw::c_int,

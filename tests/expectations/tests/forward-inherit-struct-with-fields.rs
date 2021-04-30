@@ -7,6 +7,7 @@
 
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
+#[bindgen_original_name("RootedBase")]
 pub struct js_RootedBase<T> {
     pub foo: *mut T,
     pub next: *mut Rooted<T>,

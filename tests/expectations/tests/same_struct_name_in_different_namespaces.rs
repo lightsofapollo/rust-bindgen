@@ -7,11 +7,13 @@
 
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
+#[bindgen_original_name("Zone")]
 pub struct JS_Zone {
     _unused: [u8; 0],
 }
 #[repr(C)]
 #[derive(Debug, Default, Copy, Clone)]
+#[bindgen_original_name("Zone")]
 pub struct JS_shadow_Zone {
     pub x: ::std::os::raw::c_int,
     pub y: ::std::os::raw::c_int,

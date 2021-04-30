@@ -7,6 +7,7 @@
 
 #[repr(C)]
 #[derive(Debug)]
+#[bindgen_original_name("basic_string")]
 pub struct std_basic_string<CharT> {
     pub hider: std_basic_string_Alloc_hider,
     pub length: ::std::os::raw::c_ulong,
@@ -15,6 +16,7 @@ pub struct std_basic_string<CharT> {
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
+#[bindgen_original_name("basic_string::Alloc_hider")]
 pub struct std_basic_string_Alloc_hider {
     pub storage: *mut ::std::os::raw::c_void,
 }

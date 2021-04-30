@@ -50,6 +50,7 @@ impl<T> ::std::cmp::PartialEq for __BindgenUnionField<T> {
 impl<T> ::std::cmp::Eq for __BindgenUnionField<T> {}
 #[repr(C)]
 #[derive(Debug, Default, Copy, Hash, PartialEq, Eq)]
+#[bindgen_original_name("FragmentOrURL")]
 pub struct mozilla_FragmentOrURL {
     pub mIsLocalRef: bool,
 }
@@ -86,6 +87,7 @@ impl Clone for mozilla_FragmentOrURL {
 }
 #[repr(C)]
 #[derive(Debug, Default, Copy, Hash, PartialEq, Eq)]
+#[bindgen_original_name("Position")]
 pub struct mozilla_Position {
     pub _address: u8,
 }
@@ -109,6 +111,7 @@ impl Clone for mozilla_Position {
 }
 #[repr(C)]
 #[derive(Debug, Default, Copy, Clone, Hash, PartialEq, Eq)]
+#[bindgen_original_name("StyleShapeSource")]
 pub struct mozilla_StyleShapeSource {
     pub __bindgen_anon_1: mozilla_StyleShapeSource__bindgen_ty_1,
 }

@@ -28,6 +28,7 @@ pub type nsBaseHashtable_KeyType = [u8; 0usize];
 pub type nsBaseHashtable_EntryType = nsBaseHashtableET;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
+#[bindgen_original_name("nsBaseHashtable::LookupResult")]
 pub struct nsBaseHashtable_LookupResult {
     pub mEntry: *mut nsBaseHashtable_EntryType,
     pub mTable: *mut nsBaseHashtable,
@@ -43,6 +44,7 @@ impl Default for nsBaseHashtable_LookupResult {
 }
 #[repr(C)]
 #[derive(Debug)]
+#[bindgen_original_name("nsBaseHashtable::EntryPtr")]
 pub struct nsBaseHashtable_EntryPtr {
     pub mEntry: *mut nsBaseHashtable_EntryType,
     pub mExistingEntry: bool,

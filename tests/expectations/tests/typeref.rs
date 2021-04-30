@@ -7,6 +7,7 @@
 
 #[repr(C)]
 #[derive(Debug, Default, Copy, Clone, Hash, PartialEq, Eq)]
+#[bindgen_original_name("FragmentOrURL")]
 pub struct mozilla_FragmentOrURL {
     pub mIsLocalRef: bool,
 }
@@ -38,6 +39,7 @@ fn bindgen_test_layout_mozilla_FragmentOrURL() {
 }
 #[repr(C)]
 #[derive(Debug, Default, Copy, Clone, Hash, PartialEq, Eq)]
+#[bindgen_original_name("Position")]
 pub struct mozilla_Position {
     pub _address: u8,
 }
@@ -55,6 +57,7 @@ fn bindgen_test_layout_mozilla_Position() {
     );
 }
 #[repr(C)]
+#[bindgen_original_name("StyleShapeSource")]
 pub struct mozilla_StyleShapeSource {
     pub __bindgen_anon_1: mozilla_StyleShapeSource__bindgen_ty_1,
 }

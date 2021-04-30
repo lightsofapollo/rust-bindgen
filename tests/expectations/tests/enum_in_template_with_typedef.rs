@@ -7,6 +7,7 @@
 
 #[repr(C)]
 #[derive(Debug, Default, Copy, Clone)]
+#[bindgen_original_name("fbstring_core")]
 pub struct std_fbstring_core {
     pub _address: u8,
 }

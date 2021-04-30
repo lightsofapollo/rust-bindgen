@@ -12,6 +12,7 @@ pub struct Thing {
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
+#[bindgen_original_name("Thing::Inner")]
 pub struct Thing_Inner<T> {
     pub ptr: *mut T,
     pub _phantom_0: ::std::marker::PhantomData<::std::cell::UnsafeCell<T>>,
@@ -27,6 +28,7 @@ impl<T> Default for Thing_Inner<T> {
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
+#[bindgen_original_name("Thing::AnotherInner")]
 pub struct Thing_AnotherInner<T> {
     pub _base: Thing_Inner<T>,
     pub _phantom_0: ::std::marker::PhantomData<::std::cell::UnsafeCell<T>>,

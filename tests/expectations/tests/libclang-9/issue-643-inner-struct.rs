@@ -45,6 +45,7 @@ pub struct rte_ring {
 }
 #[repr(C)]
 #[derive(Debug, Default, Copy, Clone)]
+#[bindgen_original_name("rte_ring::prod")]
 pub struct rte_ring_prod {
     pub watermark: ::std::os::raw::c_uint,
 }
@@ -76,6 +77,7 @@ fn bindgen_test_layout_rte_ring_prod() {
 }
 #[repr(C)]
 #[derive(Debug, Default, Copy, Clone)]
+#[bindgen_original_name("rte_ring::cons")]
 pub struct rte_ring_cons {
     pub sc_dequeue: ::std::os::raw::c_uint,
 }

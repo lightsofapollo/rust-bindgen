@@ -19,6 +19,7 @@ pub mod root {
         }
         #[repr(C)]
         #[derive(Debug, Default, Copy, Clone)]
+        #[bindgen_original_name("Wrapper::sentry")]
         pub struct Wrapper_sentry {
             pub i_am_wrapper_sentry: ::std::os::raw::c_int,
         }
@@ -73,6 +74,7 @@ pub mod root {
         }
         #[repr(C)]
         #[derive(Debug, Default, Copy, Clone)]
+        #[bindgen_original_name("NotTemplateWrapper::sentry")]
         pub struct NotTemplateWrapper_sentry {
             pub i_am_not_template_wrapper_sentry: ::std::os::raw::c_char,
         }
@@ -110,6 +112,7 @@ pub mod root {
         }
         #[repr(C)]
         #[derive(Debug, Default, Copy, Clone)]
+        #[bindgen_original_name("InlineNotTemplateWrapper::sentry")]
         pub struct InlineNotTemplateWrapper_sentry {
             pub i_am_inline_not_template_wrapper_sentry: bool,
         }
@@ -166,6 +169,7 @@ pub mod root {
         }
         #[repr(C)]
         #[derive(Debug, Default, Copy, Clone)]
+        #[bindgen_original_name("InlineTemplateWrapper::sentry")]
         pub struct InlineTemplateWrapper_sentry {
             pub i_am_inline_template_wrapper_sentry: ::std::os::raw::c_int,
         }
@@ -176,6 +180,7 @@ pub mod root {
         }
         #[repr(C)]
         #[derive(Debug, Default, Copy, Clone)]
+        #[bindgen_original_name("OuterDoubleWrapper::InnerDoubleWrapper")]
         pub struct OuterDoubleWrapper_InnerDoubleWrapper {
             pub _address: u8,
         }
@@ -213,6 +218,9 @@ pub mod root {
         }
         #[repr(C)]
         #[derive(Debug, Default, Copy, Clone)]
+        #[bindgen_original_name(
+            "OuterDoubleWrapper::InnerDoubleWrapper::sentry"
+        )]
         pub struct OuterDoubleWrapper_InnerDoubleWrapper_sentry {
             pub i_am_double_wrapper_sentry: ::std::os::raw::c_int,
         }
@@ -262,11 +270,17 @@ pub mod root {
         }
         #[repr(C)]
         #[derive(Debug, Default, Copy, Clone)]
+        #[bindgen_original_name(
+            "OuterDoubleInlineWrapper::InnerDoubleInlineWrapper"
+        )]
         pub struct OuterDoubleInlineWrapper_InnerDoubleInlineWrapper {
             pub _address: u8,
         }
         #[repr(C)]
         #[derive(Debug, Default, Copy, Clone)]
+        #[bindgen_original_name(
+            "OuterDoubleInlineWrapper::InnerDoubleInlineWrapper::sentry"
+        )]
         pub struct OuterDoubleInlineWrapper_InnerDoubleInlineWrapper_sentry {
             pub i_am_double_wrapper_inline_sentry: ::std::os::raw::c_int,
         }
@@ -326,6 +340,7 @@ pub mod root {
     }
     #[repr(C)]
     #[derive(Debug, Default, Copy, Clone)]
+    #[bindgen_original_name("OutsideNamespaceWrapper::sentry")]
     pub struct OutsideNamespaceWrapper_sentry {
         pub i_am_outside_namespace_wrapper_sentry: ::std::os::raw::c_int,
     }

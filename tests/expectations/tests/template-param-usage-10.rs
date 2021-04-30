@@ -18,6 +18,7 @@ pub type DoublyIndirectUsage_Aliased<T> = T;
 pub type DoublyIndirectUsage_Typedefed<U> = U;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
+#[bindgen_original_name("DoublyIndirectUsage::IndirectUsage")]
 pub struct DoublyIndirectUsage_IndirectUsage<T, U> {
     pub member: DoublyIndirectUsage_Aliased<T>,
     pub another: DoublyIndirectUsage_Typedefed<U>,

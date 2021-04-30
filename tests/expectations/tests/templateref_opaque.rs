@@ -7,6 +7,7 @@
 
 #[repr(C)]
 #[derive(Debug, Default, Copy, Clone, Hash, PartialEq, Eq)]
+#[bindgen_original_name("PointerType")]
 pub struct detail_PointerType {
     pub _address: u8,
 }

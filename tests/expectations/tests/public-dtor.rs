@@ -7,6 +7,7 @@
 
 #[repr(C)]
 #[derive(Debug, Default)]
+#[bindgen_original_name("String")]
 pub struct cv_String {
     pub _address: u8,
 }

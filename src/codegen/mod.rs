@@ -911,7 +911,8 @@ impl CodeGenerator for Type {
                 let mut attributes = Vec::new();
                 if let Some(original_name) = item.original_name(ctx) {
                     if name != original_name {
-                        attributes.push(attributes::original_name(&original_name));
+                        attributes
+                            .push(attributes::original_name(&original_name));
                     }
                 }
 
@@ -2029,6 +2030,12 @@ impl CodeGenerator for CompInfo {
 
         if !derives.is_empty() {
             attributes.push(attributes::derives(&derives))
+        }
+
+        if let Some(original_name) = item.original_name(ctx) {
+            if canonical_name != original_name {
+                attributes.push(attributes::original_name(&original_name));
+            }
         }
 
         let mut tokens = if is_union && struct_layout.is_rust_union() {

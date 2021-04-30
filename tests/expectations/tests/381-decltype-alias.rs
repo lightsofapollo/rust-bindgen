@@ -7,6 +7,7 @@
 
 #[repr(C)]
 #[derive(Debug, Default, Copy, Clone)]
+#[bindgen_original_name("allocator_traits")]
 pub struct std_allocator_traits {
     pub _address: u8,
 }

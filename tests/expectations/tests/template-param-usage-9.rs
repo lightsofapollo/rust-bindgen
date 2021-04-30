@@ -16,6 +16,7 @@ pub type DoesNotUse_Aliased<T> = T;
 pub type DoesNotUse_Typedefed<U> = U;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
+#[bindgen_original_name("DoesNotUse::IndirectUsage")]
 pub struct DoesNotUse_IndirectUsage<T, U> {
     pub member: DoesNotUse_Aliased<T>,
     pub another: DoesNotUse_Typedefed<U>,

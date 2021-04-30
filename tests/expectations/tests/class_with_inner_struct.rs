@@ -14,6 +14,7 @@ pub struct A {
 }
 #[repr(C)]
 #[derive(Debug, Default, Copy, Clone, Hash, PartialEq, Eq)]
+#[bindgen_original_name("A::Segment")]
 pub struct A_Segment {
     pub begin: ::std::os::raw::c_int,
     pub end: ::std::os::raw::c_int,
@@ -179,6 +180,7 @@ pub struct B {
 }
 #[repr(C)]
 #[derive(Debug, Default, Copy, Clone, Hash, PartialEq, Eq)]
+#[bindgen_original_name("B::Segment")]
 pub struct B_Segment {
     pub begin: ::std::os::raw::c_int,
     pub end: ::std::os::raw::c_int,
@@ -422,6 +424,7 @@ impl Default for C__bindgen_ty_1 {
 }
 #[repr(C)]
 #[derive(Debug, Default, Copy, Clone, Hash, PartialEq, Eq)]
+#[bindgen_original_name("C::Segment")]
 pub struct C_Segment {
     pub begin: ::std::os::raw::c_int,
     pub end: ::std::os::raw::c_int,

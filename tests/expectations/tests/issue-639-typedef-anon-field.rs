@@ -12,6 +12,7 @@ pub struct Foo {
 }
 #[repr(C)]
 #[derive(Debug, Default, Copy, Clone)]
+#[bindgen_original_name("Foo::Bar")]
 pub struct Foo_Bar {
     pub abc: ::std::os::raw::c_int,
 }
@@ -63,6 +64,7 @@ pub struct Baz {
 }
 #[repr(C)]
 #[derive(Debug, Default, Copy, Clone)]
+#[bindgen_original_name("Baz::Bar")]
 pub struct Baz_Bar {
     pub abc: ::std::os::raw::c_int,
 }

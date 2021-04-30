@@ -7,6 +7,7 @@
 
 #[repr(C)]
 #[derive(Debug, Default, Copy, Clone)]
+#[bindgen_original_name("RootedBase")]
 pub struct js_RootedBase {
     pub _address: u8,
 }

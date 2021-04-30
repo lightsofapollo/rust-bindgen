@@ -31,6 +31,7 @@ pub struct nsBaseHashtable {
 pub type nsBaseHashtable_EntryType<K, V> = Entry<K, V>;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
+#[bindgen_original_name("nsBaseHashtable::EntryPtr")]
 pub struct nsBaseHashtable_EntryPtr<K, V> {
     pub mEntry: *mut nsBaseHashtable_EntryType<K, V>,
     pub mExistingEntry: bool,

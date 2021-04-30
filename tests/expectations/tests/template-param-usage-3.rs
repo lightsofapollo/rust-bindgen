@@ -13,6 +13,9 @@ pub struct UsesTemplateParameter<T> {
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
+#[bindgen_original_name(
+    "UsesTemplateParameter::AlsoUsesTemplateParameterAndMore"
+)]
 pub struct UsesTemplateParameter_AlsoUsesTemplateParameterAndMore<T, U> {
     pub also: T,
     pub more: U,

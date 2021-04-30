@@ -7,6 +7,7 @@
 
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
+#[bindgen_original_name("Wrapper::Wrapped")]
 pub struct Wrapper_Wrapped<T> {
     pub t: T,
     pub _phantom_0: ::std::marker::PhantomData<::std::cell::UnsafeCell<T>>,

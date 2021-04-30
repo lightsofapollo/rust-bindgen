@@ -17,6 +17,7 @@ pub struct Outer {
 }
 #[repr(C)]
 #[derive(Debug, Default, Copy, Clone)]
+#[bindgen_original_name("Outer::Inner")]
 pub struct Outer_Inner {
     pub _address: u8,
 }
