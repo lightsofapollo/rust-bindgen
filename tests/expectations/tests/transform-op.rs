@@ -78,6 +78,7 @@ pub const StyleFoo_Tag_Foo: StyleFoo_Tag = 0;
 pub const StyleFoo_Tag_Bar: StyleFoo_Tag = 0;
 pub const StyleFoo_Tag_Baz: StyleFoo_Tag = 0;
 pub const StyleFoo_Tag_Bazz: StyleFoo_Tag = 0;
+#[bindgen_original_name("StyleFoo::Tag")]
 pub type StyleFoo_Tag = u8;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -154,6 +155,7 @@ pub const StyleBar_Tag_Bar1: StyleBar_Tag = 0;
 pub const StyleBar_Tag_Bar2: StyleBar_Tag = 0;
 pub const StyleBar_Tag_Bar3: StyleBar_Tag = 0;
 pub const StyleBar_Tag_Bar4: StyleBar_Tag = 0;
+#[bindgen_original_name("StyleBar::Tag")]
 pub type StyleBar_Tag = ::std::os::raw::c_int;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]

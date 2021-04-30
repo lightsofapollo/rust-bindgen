@@ -17,6 +17,7 @@ impl TErrorResult_UnionState {
         TErrorResult_UnionState::HasMessage;
 }
 #[repr(i32)]
+#[bindgen_original_name("TErrorResult::UnionState")]
 #[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
 pub enum TErrorResult_UnionState {
     HasMessage = 0,

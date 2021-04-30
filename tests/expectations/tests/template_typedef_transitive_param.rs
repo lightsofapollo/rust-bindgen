@@ -25,4 +25,5 @@ impl<T> Default for Wrapper_Wrapped<T> {
         }
     }
 }
+#[bindgen_original_name("Wrapper::Type")]
 pub type Wrapper_Type<T> = Wrapper_Wrapped<T>;

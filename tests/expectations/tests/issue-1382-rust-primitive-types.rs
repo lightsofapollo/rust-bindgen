@@ -5,13 +5,21 @@
     non_upper_case_globals
 )]
 
+#[bindgen_original_name("i8")]
 pub type i8_ = i8;
+#[bindgen_original_name("u8")]
 pub type u8_ = u8;
+#[bindgen_original_name("i16")]
 pub type i16_ = i16;
+#[bindgen_original_name("u16")]
 pub type u16_ = u16;
+#[bindgen_original_name("i32")]
 pub type i32_ = i32;
+#[bindgen_original_name("u32")]
 pub type u32_ = u32;
+#[bindgen_original_name("i64")]
 pub type i64_ = i64;
+#[bindgen_original_name("u64")]
 pub type u64_ = u64;
 #[repr(C)]
 #[derive(Debug, Default, Copy, Clone)]

@@ -12,7 +12,9 @@ pub struct DoublyIndirectUsage<T, U> {
     pub _phantom_0: ::std::marker::PhantomData<::std::cell::UnsafeCell<T>>,
     pub _phantom_1: ::std::marker::PhantomData<::std::cell::UnsafeCell<U>>,
 }
+#[bindgen_original_name("DoublyIndirectUsage::Aliased")]
 pub type DoublyIndirectUsage_Aliased<T> = T;
+#[bindgen_original_name("DoublyIndirectUsage::Typedefed")]
 pub type DoublyIndirectUsage_Typedefed<U> = U;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]

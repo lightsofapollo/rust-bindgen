@@ -10,4 +10,5 @@
 pub struct e {
     pub _address: u8,
 }
+#[bindgen_original_name("e::f")]
 pub type e_f<d> = d;

@@ -10,4 +10,5 @@
 pub struct DoesNotUseTemplateParameter {
     pub x: ::std::os::raw::c_int,
 }
+#[bindgen_original_name("DoesNotUseTemplateParameter::ButAliasDoesUseIt")]
 pub type DoesNotUseTemplateParameter_ButAliasDoesUseIt<T> = T;

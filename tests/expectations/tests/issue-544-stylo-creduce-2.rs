@@ -9,7 +9,9 @@
 pub struct Foo {
     pub member: Foo_SecondAlias,
 }
+#[bindgen_original_name("Foo::FirstAlias")]
 pub type Foo_FirstAlias = [u8; 0usize];
+#[bindgen_original_name("Foo::SecondAlias")]
 pub type Foo_SecondAlias = [u8; 0usize];
 impl Default for Foo {
     fn default() -> Self {

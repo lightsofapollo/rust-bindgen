@@ -7,6 +7,7 @@
 #![cfg(not(test))]
 
 pub type void_fn = ::std::option::Option<unsafe extern "stdcall" fn()>;
+#[bindgen_original_name("fn")]
 pub type fn_ = ::std::option::Option<
     unsafe extern "stdcall" fn(id: ::std::os::raw::c_int) -> void_fn,
 >;

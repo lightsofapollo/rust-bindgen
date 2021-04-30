@@ -15,7 +15,9 @@ pub struct C {
     pub d: AnotherInt,
     pub other_ptr: *mut AnotherInt,
 }
+#[bindgen_original_name("C::MyInt")]
 pub type C_MyInt = ::std::os::raw::c_int;
+#[bindgen_original_name("C::Lookup")]
 pub type C_Lookup = *const ::std::os::raw::c_char;
 #[test]
 fn bindgen_test_layout_C() {

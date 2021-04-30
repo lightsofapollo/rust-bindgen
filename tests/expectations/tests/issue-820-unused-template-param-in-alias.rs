@@ -5,4 +5,5 @@
     non_upper_case_globals
 )]
 
+#[bindgen_original_name("Foo::self_type")]
 pub type Foo_self_type = u8;

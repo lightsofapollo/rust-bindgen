@@ -6,6 +6,7 @@
 )]
 
 pub mod one_Foo {
+    #[bindgen_original_name("Foo")]
     pub type Type = ::std::os::raw::c_int;
     pub const Variant1: Type = 0;
     pub const Variant2: Type = 1;

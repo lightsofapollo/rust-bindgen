@@ -11,6 +11,7 @@ pub struct IndirectlyUsesTemplateParameter<T> {
     pub aliased: IndirectlyUsesTemplateParameter_Aliased<T>,
     pub _phantom_0: ::std::marker::PhantomData<::std::cell::UnsafeCell<T>>,
 }
+#[bindgen_original_name("IndirectlyUsesTemplateParameter::Aliased")]
 pub type IndirectlyUsesTemplateParameter_Aliased<T> = T;
 impl<T> Default for IndirectlyUsesTemplateParameter<T> {
     fn default() -> Self {

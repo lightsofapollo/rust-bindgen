@@ -13,6 +13,7 @@ pub enum _bindgen_ty_1 {
     ENUM_VARIANT_1 = 0,
     ENUM_VARIANT_2 = 1,
 }
+#[bindgen_original_name("Alias")]
 pub type JS_Alias = u8;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]

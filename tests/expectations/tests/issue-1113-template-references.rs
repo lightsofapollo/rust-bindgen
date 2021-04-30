@@ -27,6 +27,7 @@ impl<K, V> Default for Entry<K, V> {
 pub struct nsBaseHashtable {
     pub _address: u8,
 }
+#[bindgen_original_name("nsBaseHashtable::EntryType")]
 pub type nsBaseHashtable_EntryType<K, V> = Entry<K, V>;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]

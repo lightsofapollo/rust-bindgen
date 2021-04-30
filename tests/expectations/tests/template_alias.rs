@@ -5,6 +5,7 @@
     non_upper_case_globals
 )]
 
+#[bindgen_original_name("Wrapped")]
 pub type JS_detail_Wrapped<T> = T;
 #[repr(C)]
 #[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]

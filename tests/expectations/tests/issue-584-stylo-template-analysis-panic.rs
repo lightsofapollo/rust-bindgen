@@ -12,6 +12,7 @@ pub type RefPtr<T> = T;
 pub struct A {
     pub _address: u8,
 }
+#[bindgen_original_name("A::a")]
 pub type A_a = b;
 #[test]
 fn bindgen_test_layout_A() {

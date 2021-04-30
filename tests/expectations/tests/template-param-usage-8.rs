@@ -13,7 +13,9 @@ pub struct IndirectUsage<T, U> {
     pub _phantom_0: ::std::marker::PhantomData<::std::cell::UnsafeCell<T>>,
     pub _phantom_1: ::std::marker::PhantomData<::std::cell::UnsafeCell<U>>,
 }
+#[bindgen_original_name("IndirectUsage::Typedefed")]
 pub type IndirectUsage_Typedefed<T> = T;
+#[bindgen_original_name("IndirectUsage::Aliased")]
 pub type IndirectUsage_Aliased<U> = U;
 impl<T, U> Default for IndirectUsage<T, U> {
     fn default() -> Self {

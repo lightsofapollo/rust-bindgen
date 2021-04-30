@@ -20,6 +20,7 @@ pub mod anon_enum {
     pub const Variant3: Type = 2;
 }
 pub mod ns1_foo {
+    #[bindgen_original_name("foo")]
     pub type Type = ::std::os::raw::c_uint;
     pub const THIS: Type = 0;
     pub const SHOULD_BE: Type = 1;
@@ -27,6 +28,7 @@ pub mod ns1_foo {
     pub const ALSO_THIS: Type = 42;
 }
 pub mod ns2_Foo {
+    #[bindgen_original_name("Foo")]
     pub type Type = ::std::os::raw::c_int;
     pub const Variant1: Type = 0;
     pub const Variant2: Type = 1;
@@ -213,6 +215,7 @@ impl Default for Baz {
     }
 }
 pub mod one_Foo {
+    #[bindgen_original_name("Foo")]
     pub type Type = ::std::os::raw::c_int;
     pub const Variant1: Type = 0;
     pub const Variant2: Type = 1;

@@ -53,8 +53,11 @@ impl<T> ::std::cmp::Eq for __BindgenUnionField<T> {}
 pub struct basic_string {
     pub _address: u8,
 }
+#[bindgen_original_name("basic_string::size_type")]
 pub type basic_string_size_type = ::std::os::raw::c_ulonglong;
+#[bindgen_original_name("basic_string::value_type")]
 pub type basic_string_value_type = ::std::os::raw::c_char;
+#[bindgen_original_name("basic_string::pointer")]
 pub type basic_string_pointer = *mut basic_string_value_type;
 #[repr(C)]
 #[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]

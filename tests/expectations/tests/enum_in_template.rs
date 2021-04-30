@@ -12,4 +12,5 @@ pub struct Foo {
 }
 pub const Foo_Bar_A: Foo_Bar = 0;
 pub const Foo_Bar_B: Foo_Bar = 0;
+#[bindgen_original_name("Foo::Bar")]
 pub type Foo_Bar = i32;
