@@ -2045,6 +2045,11 @@ impl CodeGenerator for CompInfo {
             attributes.push(attributes::derives(&derives))
         }
 
+        if item.annotations().must_use_type() || ctx.must_use_type_by_name(item)
+        {
+            attributes.push(attributes::must_use());
+        }
+
         let mut tokens = if is_union && struct_layout.is_rust_union() {
             quote! {
                 #( #attributes )*
@@ -3016,6 +3021,11 @@ impl CodeGenerator for Enum {
 
         if let Some(comment) = item.comment(ctx) {
             attrs.push(attributes::doc(comment));
+        }
+
+        if item.annotations().must_use_type() || ctx.must_use_type_by_name(item)
+        {
+            attrs.push(attributes::must_use());
         }
 
         if !variation.is_const() {
