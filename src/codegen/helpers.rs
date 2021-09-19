@@ -94,6 +94,12 @@ pub mod attributes {
         }
     }
 
+    pub fn is_private() -> TokenStream {
+        quote! {
+            #[bindgen_private]
+        }
+    }
+
     pub fn unused_template_param_in_arg_or_return() -> TokenStream {
         quote! {
             #[bindgen_unused_template_param_in_arg_or_return]
