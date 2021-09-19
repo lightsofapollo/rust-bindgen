@@ -66,11 +66,22 @@ impl MethodKind {
     /// Is this a pure virtual method?
     pub fn is_pure_virtual(&self) -> bool {
         match *self {
-            MethodKind::Virtual { pure_virtual } |
-            MethodKind::VirtualDestructor { pure_virtual } => pure_virtual,
+            MethodKind::Virtual { pure_virtual }
+            | MethodKind::VirtualDestructor { pure_virtual } => pure_virtual,
             _ => false,
         }
     }
+}
+
+// The kind of C++ special member.
+// TODO: We don't currently cover copy assignment or move assignment operator
+// because libclang doesn't provide a way to query for them.
+#[derive(Debug, Copy, Clone, PartialEq)]
+pub enum SpecialMemberKind {
+    DefaultConstructor,
+    CopyConstructor,
+    MoveConstructor,
+    Destructor,
 }
 
 /// A struct representing a C++ method, either static, normal, or virtual.
@@ -112,8 +123,8 @@ impl Method {
     /// Is this a virtual method?
     pub fn is_virtual(&self) -> bool {
         match self.kind {
-            MethodKind::Virtual { .. } |
-            MethodKind::VirtualDestructor { .. } => true,
+            MethodKind::Virtual { .. }
+            | MethodKind::VirtualDestructor { .. } => true,
             _ => false,
         }
     }
@@ -617,9 +628,9 @@ where
         let mut offset = unit_size_in_bits;
         if !packed {
             if is_ms_struct {
-                if unit_size_in_bits != 0 &&
-                    (bitfield_width == 0 ||
-                        bitfield_width > unfilled_bits_in_unit)
+                if unit_size_in_bits != 0
+                    && (bitfield_width == 0
+                        || bitfield_width > unfilled_bits_in_unit)
                 {
                     // We've reached the end of this allocation unit, so flush it
                     // and its bitfields.
@@ -640,11 +651,10 @@ where
                     unit_align = 0;
                 }
             } else {
-                if offset != 0 &&
-                    (bitfield_width == 0 ||
-                        (offset & (bitfield_align * 8 - 1)) +
-                            bitfield_width >
-                            bitfield_size * 8)
+                if offset != 0
+                    && (bitfield_width == 0
+                        || (offset & (bitfield_align * 8 - 1)) + bitfield_width
+                            > bitfield_size * 8)
                 {
                     offset = align_to(offset, bitfield_align * 8);
                 }
@@ -1283,8 +1293,8 @@ impl CompInfo {
         ci.is_forward_declaration =
             location.map_or(true, |cur| match cur.kind() {
                 CXCursor_ParmDecl => true,
-                CXCursor_StructDecl | CXCursor_UnionDecl |
-                CXCursor_ClassDecl => !cur.is_definition(),
+                CXCursor_StructDecl | CXCursor_UnionDecl
+                | CXCursor_ClassDecl => !cur.is_definition(),
                 _ => false,
             });
 
@@ -1294,9 +1304,9 @@ impl CompInfo {
                 if let Some((ty, clang_ty, public, offset)) =
                     maybe_anonymous_struct_field.take()
                 {
-                    if cur.kind() == CXCursor_TypedefDecl &&
-                        cur.typedef_type().unwrap().canonical_type() ==
-                            clang_ty
+                    if cur.kind() == CXCursor_TypedefDecl
+                        && cur.typedef_type().unwrap().canonical_type()
+                            == clang_ty
                     {
                         // Typedefs of anonymous structs appear later in the ast
                         // than the struct itself, that would otherwise be an
@@ -1377,14 +1387,14 @@ impl CompInfo {
                 CXCursor_UnexposedAttr => {
                     ci.found_unknown_attr = true;
                 }
-                CXCursor_EnumDecl |
-                CXCursor_TypeAliasDecl |
-                CXCursor_TypeAliasTemplateDecl |
-                CXCursor_TypedefDecl |
-                CXCursor_StructDecl |
-                CXCursor_UnionDecl |
-                CXCursor_ClassTemplate |
-                CXCursor_ClassDecl => {
+                CXCursor_EnumDecl
+                | CXCursor_TypeAliasDecl
+                | CXCursor_TypeAliasTemplateDecl
+                | CXCursor_TypedefDecl
+                | CXCursor_StructDecl
+                | CXCursor_UnionDecl
+                | CXCursor_ClassTemplate
+                | CXCursor_ClassDecl => {
                     // We can find non-semantic children here, clang uses a
                     // StructDecl to note incomplete structs that haven't been
                     // forward-declared before, see [1].
@@ -1414,8 +1424,8 @@ impl CompInfo {
 
                     // A declaration of an union or a struct without name could
                     // also be an unnamed field, unfortunately.
-                    if cur.spelling().is_empty() &&
-                        cur.kind() != CXCursor_EnumDecl
+                    if cur.spelling().is_empty()
+                        && cur.kind() != CXCursor_EnumDecl
                     {
                         let ty = cur.cur_type();
                         let public = cur.public_accessible();
@@ -1455,12 +1465,12 @@ impl CompInfo {
                         ty: type_id,
                         kind,
                         field_name,
-                        is_pub: cur.access_specifier() ==
-                            clang_sys::CX_CXXPublic,
+                        is_pub: cur.access_specifier()
+                            == clang_sys::CX_CXXPublic,
                     });
                 }
-                CXCursor_Constructor | CXCursor_Destructor |
-                CXCursor_CXXMethod => {
+                CXCursor_Constructor | CXCursor_Destructor
+                | CXCursor_CXXMethod => {
                     let is_virtual = cur.method_is_virtual();
                     let is_static = cur.method_is_static();
                     debug_assert!(!(is_static && is_virtual), "How?");
@@ -1538,8 +1548,8 @@ impl CompInfo {
                 }
                 CXCursor_VarDecl => {
                     let linkage = cur.linkage();
-                    if linkage != CXLinkage_External &&
-                        linkage != CXLinkage_UniqueExternal
+                    if linkage != CXLinkage_External
+                        && linkage != CXLinkage_UniqueExternal
                     {
                         return CXChildVisit_Continue;
                     }
@@ -1555,10 +1565,10 @@ impl CompInfo {
                     }
                 }
                 // Intentionally not handled
-                CXCursor_CXXAccessSpecifier |
-                CXCursor_CXXFinalAttr |
-                CXCursor_FunctionTemplate |
-                CXCursor_ConversionFunction => {}
+                CXCursor_CXXAccessSpecifier
+                | CXCursor_CXXFinalAttr
+                | CXCursor_FunctionTemplate
+                | CXCursor_ConversionFunction => {}
                 _ => {
                     warn!(
                         "unhandled comp member `{}` (kind {:?}) in `{}` ({})",
@@ -1588,9 +1598,9 @@ impl CompInfo {
         Ok(match cursor.kind() {
             CXCursor_UnionDecl => CompKind::Union,
             CXCursor_ClassDecl | CXCursor_StructDecl => CompKind::Struct,
-            CXCursor_CXXBaseSpecifier |
-            CXCursor_ClassTemplatePartialSpecialization |
-            CXCursor_ClassTemplate => match cursor.template_kind() {
+            CXCursor_CXXBaseSpecifier
+            | CXCursor_ClassTemplatePartialSpecialization
+            | CXCursor_ClassTemplate => match cursor.template_kind() {
                 CXCursor_UnionDecl => CompKind::Union,
                 _ => CompKind::Struct,
             },
@@ -1797,8 +1807,8 @@ impl IsOpaque for CompInfo {
             //
             // See https://github.com/rust-lang/rust-bindgen/issues/537 and
             // https://github.com/rust-lang/rust/issues/33158
-            if self.is_packed(ctx, layout.as_ref()) &&
-                layout.map_or(false, |l| l.align > 1)
+            if self.is_packed(ctx, layout.as_ref())
+                && layout.map_or(false, |l| l.align > 1)
             {
                 warn!("Found a type that is both packed and aligned to greater than \
                        1; Rust before version 1.33 doesn't have `#[repr(packed(N))]`, so we \

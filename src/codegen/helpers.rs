@@ -6,6 +6,7 @@ use proc_macro2::{Ident, Span, TokenStream};
 use quote::TokenStreamExt;
 
 pub mod attributes {
+    use crate::ir::{comp::SpecialMemberKind, function::Visibility};
     use proc_macro2::{Ident, Span, TokenStream};
     use std::str::FromStr;
 
@@ -66,6 +67,66 @@ pub mod attributes {
         let name = format!("\u{1}{}", name);
         quote! {
             #[link_name = #name]
+        }
+    }
+
+    pub fn original_name(name: &str) -> TokenStream {
+        quote! {
+            #[bindgen_original_name(#name)]
+        }
+    }
+
+    pub fn ret_type_reference() -> TokenStream {
+        quote! {
+            #[bindgen_ret_type_reference]
+        }
+    }
+
+    pub fn arg_type_reference(arg_name: &Ident) -> TokenStream {
+        quote! {
+            #[bindgen_arg_type_reference(#arg_name)]
+        }
+    }
+
+    pub fn is_pure_virtual() -> TokenStream {
+        quote! {
+            #[bindgen_pure_virtual]
+        }
+    }
+
+    pub fn visibility(visibility: Visibility) -> TokenStream {
+        match visibility {
+            Visibility::Public => quote! {},
+            Visibility::Protected => quote! {
+                #[bindgen_visibility_protected]
+            },
+            Visibility::Private => quote! {
+                #[bindgen_visibility_private]
+            },
+        }
+    }
+
+    pub fn unused_template_param_in_arg_or_return() -> TokenStream {
+        quote! {
+            #[bindgen_unused_template_param_in_arg_or_return]
+        }
+    }
+
+    pub fn discards_template_param() -> TokenStream {
+        quote! {
+            #[bindgen_unused_template_param]
+        }
+    }
+
+    pub fn special_member(kind: SpecialMemberKind) -> TokenStream {
+        let kind_str = match kind {
+            SpecialMemberKind::DefaultConstructor => "default_ctor",
+            SpecialMemberKind::CopyConstructor => "copy_ctor",
+            SpecialMemberKind::MoveConstructor => "move_ctor",
+            SpecialMemberKind::Destructor => "dtor",
+        };
+        quote! {
+            #[bindgen_special_member(#kind_str)]
         }
     }
 }
@@ -146,8 +207,8 @@ pub mod ast_ty {
                 }
             }
             None => {
-                if ctx.options().use_core &&
-                    ctx.options().rust_features.core_ffi_c_void
+                if ctx.options().use_core
+                    && ctx.options().rust_features.core_ffi_c_void
                 {
                     quote! { ::core::ffi::c_void }
                 } else {
