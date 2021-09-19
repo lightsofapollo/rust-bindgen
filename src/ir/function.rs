@@ -71,6 +71,14 @@ pub enum Linkage {
     Internal,
 }
 
+/// Visibility
+#[derive(Debug, Clone, Copy)]
+pub enum Visibility {
+    Public,
+    Protected,
+    Private,
+}
+
 /// A function declaration, with a signature, arguments, and argument names.
 ///
 /// The argument names vector must be the same length as the ones in the
@@ -99,7 +107,7 @@ pub struct Function {
     special_member: Option<SpecialMemberKind>,
 
     /// C++ visibility
-    is_private: bool,
+    visibility: Visibility,
 }
 
 impl Function {
@@ -112,7 +120,7 @@ impl Function {
         kind: FunctionKind,
         linkage: Linkage,
         special_member: Option<SpecialMemberKind>,
-        is_private: bool,
+        visibility: Visibility,
     ) -> Self {
         Function {
             name,
@@ -122,7 +130,7 @@ impl Function {
             kind,
             linkage,
             special_member,
-            is_private,
+            visibility,
         }
     }
 
@@ -157,8 +165,8 @@ impl Function {
     }
 
     /// Whether it is private
-    pub fn is_private(&self) -> bool {
-        self.is_private
+    pub fn visibility(&self) -> Visibility {
+        self.visibility
     }
 }
 
@@ -613,7 +621,13 @@ impl ClangSubItemParser for Function {
             return Err(ParseError::Continue);
         }
 
-        let is_private = cursor.access_specifier() == CX_CXXPrivate;
+        let visibility = if cursor.access_specifier() == CX_CXXPrivate {
+            Visibility::Private
+        } else if cursor.access_specifier() == CX_CXXProtected {
+            Visibility::Protected
+        } else {
+            Visibility::Public
+        };
 
         if cursor.is_inlined_function() {
             if !context.options().generate_inline_functions {
@@ -674,7 +688,7 @@ impl ClangSubItemParser for Function {
             kind,
             linkage,
             special_member,
-            is_private,
+            visibility,
         );
         Ok(ParseResult::New(function, Some(cursor)))
     }

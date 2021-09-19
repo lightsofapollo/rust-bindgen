@@ -6,7 +6,7 @@ use proc_macro2::{Ident, Span, TokenStream};
 use quote::TokenStreamExt;
 
 pub mod attributes {
-    use crate::ir::comp::SpecialMemberKind;
+    use crate::ir::{comp::SpecialMemberKind, function::Visibility};
     use proc_macro2::{Ident, Span, TokenStream};
     use std::str::FromStr;
 
@@ -94,9 +94,16 @@ pub mod attributes {
         }
     }
 
-    pub fn is_private() -> TokenStream {
-        quote! {
-            #[bindgen_private]
+    pub fn visibility(visibility: Visibility) -> TokenStream {
+        match visibility {
+            Visibility::Public => quote! {
+            },
+            Visibility::Protected => quote! {
+                #[bindgen_visibility_protected]
+            },
+            Visibility::Private => quote! {
+                #[bindgen_visibility_private]
+            },
         }
     }
 
