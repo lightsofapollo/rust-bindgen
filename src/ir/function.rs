@@ -94,6 +94,12 @@ pub struct Function {
 
     /// The linkage of the function.
     linkage: Linkage,
+
+    /// C++ special member kind, if any.
+    special_member: Option<SpecialMemberKind>,
+
+    /// C++ visibility
+    is_private: bool,
 }
 
 impl Function {
@@ -105,6 +111,8 @@ impl Function {
         comment: Option<String>,
         kind: FunctionKind,
         linkage: Linkage,
+        special_member: Option<SpecialMemberKind>,
+        is_private: bool,
     ) -> Self {
         Function {
             name,
@@ -113,6 +121,8 @@ impl Function {
             comment,
             kind,
             linkage,
+            special_member,
+            is_private,
         }
     }
 
@@ -139,6 +149,16 @@ impl Function {
     /// Get this function's linkage.
     pub fn linkage(&self) -> Linkage {
         self.linkage
+    }
+
+    /// Get this function's C++ special member kind.
+    pub fn special_member(&self) -> Option<SpecialMemberKind> {
+        self.special_member
+    }
+
+    /// Whether it is private
+    pub fn is_private(&self) -> bool {
+        self.is_private
     }
 }
 
@@ -383,8 +403,8 @@ impl FunctionSig {
 
         // Don't parse operatorxx functions in C++
         let is_operator = |spelling: &str| {
-            spelling.starts_with("operator") &&
-                !clang::is_valid_identifier(spelling)
+            spelling.starts_with("operator")
+                && !clang::is_valid_identifier(spelling)
         };
         if is_operator(&spelling) {
             return Err(ParseError::Continue);
@@ -393,8 +413,8 @@ impl FunctionSig {
         // Constructors of non-type template parameter classes for some reason
         // include the template parameter in their name. Just skip them, since
         // we don't handle well non-type template parameters anyway.
-        if (kind == CXCursor_Constructor || kind == CXCursor_Destructor) &&
-            spelling.contains('<')
+        if (kind == CXCursor_Constructor || kind == CXCursor_Destructor)
+            && spelling.contains('<')
         {
             return Err(ParseError::Continue);
         }
@@ -406,11 +426,11 @@ impl FunctionSig {
         };
 
         let mut args = match kind {
-            CXCursor_FunctionDecl |
-            CXCursor_Constructor |
-            CXCursor_CXXMethod |
-            CXCursor_ObjCInstanceMethodDecl |
-            CXCursor_ObjCClassMethodDecl => {
+            CXCursor_FunctionDecl
+            | CXCursor_Constructor
+            | CXCursor_CXXMethod
+            | CXCursor_ObjCInstanceMethodDecl
+            | CXCursor_ObjCClassMethodDecl => {
                 args_from_ty_and_cursor(&ty, &cursor, ctx)
             }
             _ => {
@@ -441,13 +461,13 @@ impl FunctionSig {
             }
         };
 
-        let must_use = ctx.options().enable_function_attribute_detection &&
-            cursor.has_warn_unused_result_attr();
+        let must_use = ctx.options().enable_function_attribute_detection
+            && cursor.has_warn_unused_result_attr();
         let is_method = kind == CXCursor_CXXMethod;
         let is_constructor = kind == CXCursor_Constructor;
         let is_destructor = kind == CXCursor_Destructor;
-        if (is_constructor || is_destructor || is_method) &&
-            cursor.lexical_parent() != cursor.semantic_parent()
+        if (is_constructor || is_destructor || is_method)
+            && cursor.lexical_parent() != cursor.semantic_parent()
         {
             // Only parse constructors once.
             return Err(ParseError::Continue);
@@ -488,8 +508,8 @@ impl FunctionSig {
             }
         }
 
-        let ty_ret_type = if kind == CXCursor_ObjCInstanceMethodDecl ||
-            kind == CXCursor_ObjCClassMethodDecl
+        let ty_ret_type = if kind == CXCursor_ObjCInstanceMethodDecl
+            || kind == CXCursor_ObjCClassMethodDecl
         {
             ty.ret_type()
                 .or_else(|| cursor.ret_type())
@@ -593,9 +613,7 @@ impl ClangSubItemParser for Function {
             return Err(ParseError::Continue);
         }
 
-        if cursor.access_specifier() == CX_CXXPrivate {
-            return Err(ParseError::Continue);
-        }
+        let is_private = cursor.access_specifier() == CX_CXXPrivate;
 
         if cursor.is_inlined_function() {
             if !context.options().generate_inline_functions {
@@ -636,8 +654,28 @@ impl ClangSubItemParser for Function {
         let mangled_name = cursor_mangling(context, &cursor);
         let comment = cursor.raw_comment();
 
-        let function =
-            Self::new(name, mangled_name, sig, comment, kind, linkage);
+        let special_member = if cursor.is_default_constructor() {
+            Some(SpecialMemberKind::DefaultConstructor)
+        } else if cursor.is_copy_constructor() {
+            Some(SpecialMemberKind::CopyConstructor)
+        } else if cursor.is_move_constructor() {
+            Some(SpecialMemberKind::MoveConstructor)
+        } else if cursor.kind() == clang_sys::CXCursor_Destructor {
+            Some(SpecialMemberKind::Destructor)
+        } else {
+            None
+        };
+
+        let function = Self::new(
+            name,
+            mangled_name,
+            sig,
+            comment,
+            kind,
+            linkage,
+            special_member,
+            is_private,
+        );
         Ok(ParseResult::New(function, Some(cursor)))
     }
 }

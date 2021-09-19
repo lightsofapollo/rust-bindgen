@@ -86,6 +86,42 @@ pub mod attributes {
             #[bindgen_arg_type_reference(#arg_name)]
         }
     }
+
+    pub fn is_pure_virtual() -> TokenStream {
+        quote! {
+            #[bindgen_pure_virtual]
+        }
+    }
+
+    pub fn is_private() -> TokenStream {
+        quote! {
+            #[bindgen_private]
+        }
+    }
+
+    pub fn unused_template_param_in_arg_or_return() -> TokenStream {
+        quote! {
+            #[bindgen_unused_template_param_in_arg_or_return]
+        }
+    }
+
+    pub fn discards_template_param() -> TokenStream {
+        quote! {
+            #[bindgen_unused_template_param]
+        }
+    }
+
+    pub fn special_member(kind: SpecialMemberKind) -> TokenStream {
+        let kind_str = match kind {
+            SpecialMemberKind::DefaultConstructor => "default_ctor",
+            SpecialMemberKind::CopyConstructor => "copy_ctor",
+            SpecialMemberKind::MoveConstructor => "move_ctor",
+            SpecialMemberKind::Destructor => "dtor",
+        };
+        quote! {
+            #[bindgen_special_member(#kind_str)]
+        }
+    }
 }
 
 /// Generates a proper type for a field or type with a given `Layout`, that is,
@@ -164,8 +200,8 @@ pub mod ast_ty {
                 }
             }
             None => {
-                if ctx.options().use_core &&
-                    ctx.options().rust_features.core_ffi_c_void
+                if ctx.options().use_core
+                    && ctx.options().rust_features.core_ffi_c_void
                 {
                     quote! { ::core::ffi::c_void }
                 } else {

@@ -3999,6 +3999,10 @@ impl CodeGenerator for Function {
             attributes.push(attributes::original_name(self.name()));
         }
 
+        if self.is_private() {
+            attributes.push(attributes::is_private());
+        }
+
         let abi = match signature.abi() {
             Abi::ThisCall if !ctx.options().rust_features().thiscall_abi => {
                 warn!("Skipping function with thiscall ABI that isn't supported by the configured Rust target");
