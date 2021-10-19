@@ -619,6 +619,7 @@ impl CodeGenerator for Var {
             return;
         }
 
+        let mut attrs = vec![];
         let ty = self
             .ty()
             .to_rust_ty_or_opaque(ctx, &())

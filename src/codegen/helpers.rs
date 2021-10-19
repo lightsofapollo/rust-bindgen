@@ -96,8 +96,7 @@ pub mod attributes {
 
     pub fn visibility(visibility: Visibility) -> TokenStream {
         match visibility {
-            Visibility::Public => quote! {
-            },
+            Visibility::Public => quote! {},
             Visibility::Protected => quote! {
                 #[bindgen_visibility_protected]
             },
@@ -116,6 +115,18 @@ pub mod attributes {
     pub fn alias_discards_template_params() -> TokenStream {
         quote! {
             #[bindgen_unused_template_param]
+        }
+    }
+
+    pub fn special_member(kind: SpecialMemberKind) -> TokenStream {
+        let kind_str = match kind {
+            SpecialMemberKind::DefaultConstructor => "default_ctor",
+            SpecialMemberKind::CopyConstructor => "copy_ctor",
+            SpecialMemberKind::MoveConstructor => "move_ctor",
+            SpecialMemberKind::Destructor => "dtor",
+        };
+        quote! {
+            #[bindgen_special_member(#kind_str)]
         }
     }
 }
